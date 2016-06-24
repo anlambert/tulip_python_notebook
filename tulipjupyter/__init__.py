@@ -13,22 +13,24 @@ import shutil
 from tulip import *
 
 TULIPJS_HTML = jinja2.Template("""
-<style>div.output_area .tulip_viz { max-width:100%; height:auto;}</style>
-<div id="{{ vizid }}" class="tulip_viz"></div;  require.config({paths: {tulip: "{{ tulipjs_url[:-3] }}",
+<style type="text/css">div.output_area .tulip_viz { max-width:100%; height:300; }</style>
+<div id="{{ vizid }}" class="tulip_viz"></div>
+<script type="text/javascript">
+  require.config({paths: {tulip: "{{ tulipjs_url[:-3] }}",
                           base64utils: "{{ base64utils_url[:-3] }}"}});
   require(["tulip", "base64utils"], function(tulip, base64utils) {
 
     function initTulipGraphVisualization() {
       if (!tulip.isLoaded()) {
-        console.log('coucou');
         setTimeout(initTulipGraphVisualization, 1000);
       } else {
+        console.log("OK");
         var tlpbgzGraphBase64 = "{{ tlpbgz_graph_base64 }}";
         var tlpbgzGraphBinary = base64utils.base64DecToArr(tlpbgzGraphBase64);
         var container = document.getElementById("{{ vizid }}");
         var tulipView = tulip.View(container, 400, 300);
         tulipView.loadGraphFromData("graph.tlpb.gz", tlpbgzGraphBinary);
-        tulipView.centerView();
+        tulipView.centerScene();
         tulipView.draw();
       }
     };
