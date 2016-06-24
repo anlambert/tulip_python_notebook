@@ -10,10 +10,15 @@ import random
 import os.path
 import tempfile
 import shutil
+import IPython
+from IPython.core.getipython import get_ipython
+from IPython.core.display import display as ipythondisplay
 from tulip import *
 
 TULIPJS_HTML = jinja2.Template("""
-<style type="text/css">div.output_area .tulip_viz { max-width:100%; height:300; }</style>
+<style type="text/css">
+    div.output_area .tulip_viz { height:400px; border: 1px solid black}
+</style>
 <div id="{{ vizid }}" class="tulip_viz"></div>
 <script type="text/javascript">
   require.config({paths: {tulip: "{{ tulipjs_url[:-3] }}",
@@ -24,11 +29,10 @@ TULIPJS_HTML = jinja2.Template("""
       if (!tulip.isLoaded()) {
         setTimeout(initTulipGraphVisualization, 1000);
       } else {
-        console.log("OK");
         var tlpbgzGraphBase64 = "{{ tlpbgz_graph_base64 }}";
         var tlpbgzGraphBinary = base64utils.base64DecToArr(tlpbgzGraphBase64);
         var container = document.getElementById("{{ vizid }}");
-        var tulipView = tulip.View(container, 400, 300);
+        var tulipView = tulip.View(container);
         tulipView.loadGraphFromData("graph.tlpb.gz", tlpbgzGraphBinary);
         tulipView.centerScene();
         tulipView.draw();
@@ -45,7 +49,10 @@ def copyNeededFilesToWebServer():
 
     nbextension = True
     try:
-        from IPython.html import install_nbextension
+        if IPython.version_info[0] >= 4:
+            from notebook import install_nbextension
+        else:
+            from IPython.html import install_nbextension
     except ImportError:
         nbextension = False
 
@@ -67,7 +74,6 @@ def copyNeededFilesToWebServer():
 
         def _install_nbextension(extensions):
             """Wrapper for IPython.html.install_nbextension."""
-            import IPython
             if IPython.version_info[0] >= 3:
                 for extension in extensions:
                     install_nbextension(extension, user=True)
@@ -105,5 +111,8 @@ def getGraphVisualizationHTML(graph):
                                tlpbgz_graph_base64=tlpbgzGraphDataBase64)
 
 def display(graph):
-    from IPython.display import HTML
-    return HTML(getGraphVisualizationHTML(graph))
+    ipythondisplay(graph)
+
+ip = get_ipython()
+formatter = ip.display_formatter.formatters['text/html']
+formatter.for_type(tlp.Graph, lambda graph: getGraphVisualizationHTML(graph))
