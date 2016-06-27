@@ -69,24 +69,41 @@ TULIPJS_HTML = jinja2.Template("""
 
   var hostname = window.location.hostname;
 
+  // case where we are running a local notebook server, load required assets from it
   if (hostname == "localhost" || hostname == "127.0.0.1") {
     require.config({paths: {tulip: "{{ tulipjs_url[:-3] }}",
                             base64utils: "{{ base64utils_url[:-3] }}",
                             jquerytoolbar: "{{ jquerytoolbarjs_url[:-3] }}"}});
+
     if ($("#jqtoolbarcss").length == 0) {
       $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="{{ jquerytoolbarcss_url }}" type="text/css" />');
     }
+
+    if ($("#fontawesomecss").length == 0) {
+      $("head").append('<link id="fontawesomecss" rel="stylesheet" href="{{ fontawesomecss_url }}" type="text/css" />');
+    }
+
+  // otherwise, we assume that we are only rendering a static html notebook through nbviewer
+  // so load required assets from rawgit (GitHub CDN)
   } else {
     require.config({paths: {tulip: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/tulip",
                             base64utils: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/base64utils",
                             jquerytoolbar: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/jquery.toolbar.min"}});
+
     if ($("#jqtoolbarcss").length == 0) {
       $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/jquery.toolbar.css" type="text/css" />');
     }
-  }
 
-  if ($("#fontawesomecss").length == 0) {
-    $("head").append('<link id="fontawesomecss" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" type="text/css" />');
+    if ($("#fontawesomecss").length == 0) {
+      $("head").append('<link id="fontawesomecss" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" type="text/css" />');
+    }
+
+    window.tulipConf = {
+      modulePrefixURL: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/",
+      filePackagePrefixURL: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/",
+      memoryInitializerPrefixURL: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/"
+    };
+
   }
 
   require(["tulip", "base64utils", "jquerytoolbar"], function(tulip, base64utils) {
@@ -206,7 +223,8 @@ def copyNeededFilesToWebServer():
     urls['tulipjs'] = prefix + 'tulip.js'
     urls['base64utilsjs'] = prefix + 'base64utils.js'
     urls['jquerytoolbarjs'] = prefix + 'jquery.toolbar.min.js'
-    urls['jquerytoolbarcss'] = prefix + 'jquery.toolbar.css'
+    urls['jquerytoolbarcss'] = prefix + 'css/jquery.toolbar.css'
+    urls['fontawesomecss'] = prefix + 'css/font-awesome.min.css'
 
     return urls
 
@@ -227,6 +245,7 @@ def getGraphVisualizationHTML(graph):
                                base64utils_url=urls['base64utilsjs'],
                                jquerytoolbarjs_url=urls['jquerytoolbarjs'],
                                jquerytoolbarcss_url=urls['jquerytoolbarcss'],
+                               fontawesomecss_url=urls['fontawesomecss'],
                                tlpbgz_graph_base64=tlpbgzGraphDataBase64)
 
 def display(graph):
