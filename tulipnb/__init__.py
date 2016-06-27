@@ -91,7 +91,7 @@ TULIPJS_HTML = jinja2.Template("""
                             jquerytoolbar: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/jquery.toolbar.min"}});
 
     if ($("#jqtoolbarcss").length == 0) {
-      $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/jquery.toolbar.css" type="text/css" />');
+      $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/css/jquery.toolbar.css" type="text/css" />');
     }
 
     if ($("#fontawesomecss").length == 0) {
