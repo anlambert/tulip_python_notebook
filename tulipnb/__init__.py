@@ -4,6 +4,7 @@
 # That code is freely inspired from the great mpld3 project
 # (see https://github.com/mpld3/mpld3/tree/master/mpld3)
 
+import sys
 import base64
 import jinja2
 import random
@@ -178,7 +179,10 @@ def getGraphVisualizationHTML(graph):
     tmpGraphFile = os.path.join(dirpath, 'graph.tlpb.gz')
     tlp.saveGraph(graph, tmpGraphFile)
     tlpbgzGraphData = open(tmpGraphFile, 'rb').read()
-    tlpbgzGraphDataBase64 = base64.b64encode(tlpbgzGraphData)
+    if sys.version_info[0] == 3:
+        tlpbgzGraphDataBase64 = str(base64.b64encode(tlpbgzGraphData), 'utf-8')
+    else:
+        tlpbgzGraphDataBase64 = base64.b64encode(tlpbgzGraphData)
     shutil.rmtree(dirpath)
     return TULIPJS_HTML.render(vizid=vizid,
                                tulipjs_url=urls['tulipjs'],
