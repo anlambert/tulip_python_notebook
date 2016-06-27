@@ -19,6 +19,8 @@ function getScriptName() {
     var x = v43x76fr.name;
   } catch(error) {
 
+    console.log(error.stack.trim());
+      
     if((source = lastStackFrameRegex.exec(error.stack.trim())))
       scriptName = source[1];
     else if((source = currentStackFrameRegex.exec(error.stack.trim())))
