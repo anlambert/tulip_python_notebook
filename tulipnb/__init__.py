@@ -68,12 +68,14 @@ TULIPJS_HTML = jinja2.Template("""
 <script type="text/javascript">
 
   var hostname = window.location.hostname;
+  var scriptPaths;
 
   // case where we are running a local notebook server, load required assets from it
   if (hostname == "localhost" || hostname == "127.0.0.1") {
-    require.config({paths: {tulip: "{{ tulipjs_url[:-3] }}",
-                            base64utils: "{{ base64utils_url[:-3] }}",
-                            jquerytoolbar: "{{ jquerytoolbarjs_url[:-3] }}"}});
+
+    scriptPaths = {tulip: "{{ tulipjs_url[:-3] }}",
+                   base64utils: "{{ base64utils_url[:-3] }}",
+                   jquerytoolbar: "{{ jquerytoolbarjs_url[:-3] }}"};
 
     if ($("#jqtoolbarcss").length == 0) {
       $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="{{ jquerytoolbarcss_url }}" type="text/css" />');
@@ -86,12 +88,15 @@ TULIPJS_HTML = jinja2.Template("""
   // otherwise, we assume that we are only rendering a static html notebook through nbviewer
   // so load required assets from rawgit (GitHub CDN)
   } else {
-    require.config({paths: {tulip: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/tulip",
-                            base64utils: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/base64utils",
-                            jquerytoolbar: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/jquery.toolbar.min"}});
+
+    var cdnPrefix = "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/";
+
+    scriptPaths = {tulip: cdnPrefix + "tulip",
+                   base64utils: cdnPrefix + "base64utils",
+                   jquerytoolbar: cdnPrefix + "jquery.toolbar.min"};
 
     if ($("#jqtoolbarcss").length == 0) {
-      $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/css/jquery.toolbar.css" type="text/css" />');
+      $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="'+ cdnPrefix + 'css/jquery.toolbar.css" type="text/css" />');
     }
 
     if ($("#fontawesomecss").length == 0) {
@@ -99,12 +104,15 @@ TULIPJS_HTML = jinja2.Template("""
     }
 
     window.tulipConf = {
-      modulePrefixURL: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/",
-      filePackagePrefixURL: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/",
-      memoryInitializerPrefixURL: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/"
+      modulePrefixURL: cdnPrefix,
+      filePackagePrefixURL: cdnPrefix,
+      memoryInitializerPrefixURL: cdnPrefix
     };
 
   }
+
+  require.config({waitSeconds: 0,
+                  paths: scriptPaths});
 
   require(["tulip", "base64utils", "jquerytoolbar"], function(tulip, base64utils) {
 
