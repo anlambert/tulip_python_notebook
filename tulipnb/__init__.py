@@ -18,36 +18,42 @@ from tulip import *
 
 TULIPJS_HTML = jinja2.Template("""
 <style type="text/css">
-    .tulip_viz {
-        height: 400px;
-        border: 1px solid black;
-    }
-    .interactor_button {
-        position: absolute;
-        left: 5px !important;
-        z-index: 10;
-    }
-    .center_button {
-        position: absolute;
-        right: 0px !important;
-        top: 0px !important;
-        z-index: 10;
-    }
+.tulip_viz {
+  height: 400px;
+  border: 1px solid black;
+}
+.interactor_button {
+  position: absolute;
+  left: 5px !important;
+  z-index: 10;
+}
+.center_button {
+  position: absolute;
+  right: 0px !important;
+  top: 0px !important;
+  z-index: 10;
+}
 </style>
+
 <link rel="stylesheet" href="{{ jquerytoolbarcss_url }}" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+
 <div id="toolbar-options{{ vizid }}" class="hidden">
    <a class="interactor-znp" href="#"><i class="fa fa-hand-paper-o" aria-hidden="true"></i></a>
    <a class="interactor-zoom" href="#"><i class="fa fa-search-plus"></i></a>
    <a class="interactor-fisheye" href="#"><i class="fa fa-eye"></i></a>
 </div>
+
 <div id="{{ vizid }}" class="tulip_viz">
+
 <div id="toolbar{{ vizid }}" class="btn-toolbar btn-toolbar-dark interactor_button hidden">
     <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
 </div>
+
 <div id="center{{ vizid }}" class="btn-toolbar btn-toolbar-dark center_button hidden">
     <i class="fa fa-arrows" aria-hidden="true"></i>
 </div>
+
 </div>
 
 <script type="text/javascript">
@@ -76,45 +82,45 @@ TULIPJS_HTML = jinja2.Template("""
     };
 
     $("#toolbar-options{{ vizid }}").find(".interactor-znp").on('click', function() {
-		tulipView.activateInteractor('ZoomAndPan');
-	});
+      tulipView.activateInteractor('ZoomAndPan');
+    });
 
     $("#toolbar-options{{ vizid }}").find(".interactor-zoom").on('click', function() {
-		tulipView.activateInteractor('RectangleZoom');
-	});
+      tulipView.activateInteractor('RectangleZoom');
+    });
 
     $("#center{{ vizid }}").on('click', function() {
-		tulipView.centerScene();
-	});
+      tulipView.centerScene();
+    });
 
     $("#toolbar-options{{ vizid }}").find(".interactor-fisheye").on('click', function() {
-		tulipView.activateInteractor('Fisheye');
-	});
+      tulipView.activateInteractor('Fisheye');
+    });
 
     $("#toolbar-options{{ vizid }}").find('a').on('click', function() {
-		$this = $(this);
-		$button = $('#toolbar{{ vizid }}');
-		$newClass = $this.find('i').attr('class').substring(3);
-		$oldClass = $button.find('i').attr('class').substring(3);
-		if($newClass != $oldClass) {
-			$button.find('i').animate({
-				top: "+=50",
-				opacity: 0
-			}, 200, function() {
-				$(this).removeClass($oldClass).addClass($newClass).css({top: "-=100", opacity: 1}).animate({
-					top: "+=50"
-				});
-			});
-		}
-	});
+      $this = $(this);
+      $button = $('#toolbar{{ vizid }}');
+      $newClass = $this.find('i').attr('class').substring(3);
+      $oldClass = $button.find('i').attr('class').substring(3);
+      if($newClass != $oldClass) {
+        $button.find('i').animate({
+          top: "+=50",
+          opacity: 0
+        }, 200, function() {
+          $(this).removeClass($oldClass).addClass($newClass).css({top: "-=100", opacity: 1}).animate({
+            top: "+=50"
+          });
+        });
+      }
+    });
 
 
     $('#toolbar{{ vizid }}').toolbar({
-        content: '#toolbar-options{{ vizid }}',
-        position: 'bottom',
-        style: 'dark',
-        event: 'click',
-	    hideOnClick: true
+      content: '#toolbar-options{{ vizid }}',
+      position: 'bottom',
+      style: 'dark',
+      event: 'click',
+      hideOnClick: true
     });
 
     initTulipGraphVisualization();
