@@ -41,8 +41,7 @@ TULIPJS_HTML = jinja2.Template("""
 }
 </style>
 
-<link rel="stylesheet" href="{{ jquerytoolbarcss_url }}" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+<link rel="stylesheet" href=""/>
 
 <div id="toolbar-options{{ vizid }}" class="hidden">
    <a class="interactor-znp" href="#"><i class="fa fa-hand-paper-o" aria-hidden="true"></i></a>
@@ -68,9 +67,28 @@ TULIPJS_HTML = jinja2.Template("""
 
 <script type="text/javascript">
 
-  require.config({paths: {tulip: "{{ tulipjs_url[:-3] }}",
-                          base64utils: "{{ base64utils_url[:-3] }}",
-                          jquerytoolbar: "{{ jquerytoolbarjs_url[:-3] }}"}});
+  var hostname = window.location.hostname;
+
+  if (hostname == "localhost" || hostname == "127.0.0.1") {
+    require.config({paths: {tulip: "{{ tulipjs_url[:-3] }}",
+                            base64utils: "{{ base64utils_url[:-3] }}",
+                            jquerytoolbar: "{{ jquerytoolbarjs_url[:-3] }}"}});
+    if ($("#jqtoolbarcss").length == 0) {
+      $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="{{ jquerytoolbarcss_url }}" type="text/css" />');
+    }
+  } else {
+    require.config({paths: {tulip: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/tulip",
+                            base64utils: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/base64utils",
+                            jquerytoolbar: "https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/jquery.toolbar.min"}});
+    if ($("#jqtoolbarcss").length == 0) {
+      $("head").append('<link id="jqtoolbarcss" rel="stylesheet" href="https://rawgit.com/anlambert/tulip_python_notebook/master/tulipnb/tulipjs/jquery.toolbar.css" type="text/css" />');
+    }
+  }
+
+  if ($("#fontawesomecss").length == 0) {
+    $("head").append('<link id="fontawesomecss" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" type="text/css" />');
+  }
+
   require(["tulip", "base64utils", "jquerytoolbar"], function(tulip, base64utils) {
 
     var tulipView;
@@ -128,7 +146,6 @@ TULIPJS_HTML = jinja2.Template("""
         });
       }
     });
-
 
     $('#toolbar{{ vizid }}').toolbar({
       content: '#toolbar-options{{ vizid }}',
