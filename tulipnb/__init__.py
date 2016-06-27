@@ -33,6 +33,12 @@ TULIPJS_HTML = jinja2.Template("""
   top: 0px !important;
   z-index: 10;
 }
+.fullscreen_button {
+  position: absolute;
+  right: 0px !important;
+  top: 45px !important;
+  z-index: 10;
+}
 </style>
 
 <link rel="stylesheet" href="{{ jquerytoolbarcss_url }}" />
@@ -52,6 +58,10 @@ TULIPJS_HTML = jinja2.Template("""
 
 <div id="center{{ vizid }}" class="btn-toolbar btn-toolbar-dark center_button hidden">
     <i class="fa fa-arrows" aria-hidden="true"></i>
+</div>
+
+<div id="fullscreen{{ vizid }}" class="btn-toolbar btn-toolbar-dark fullscreen_button hidden">
+    <i class="fa fa-arrows-alt" aria-hidden="true"></i>
 </div>
 
 </div>
@@ -75,6 +85,7 @@ TULIPJS_HTML = jinja2.Template("""
         tulipView = tulip.View(container);
         $("#toolbar{{ vizid }}").removeClass('hidden');
         $("#center{{ vizid }}").removeClass('hidden');
+        $("#fullscreen{{ vizid }}").removeClass('hidden');
         tulipView.loadGraphFromData("graph.tlpb.gz", tlpbgzGraphBinary);
         tulipView.centerScene();
         tulipView.draw();
@@ -91,6 +102,10 @@ TULIPJS_HTML = jinja2.Template("""
 
     $("#center{{ vizid }}").on('click', function() {
       tulipView.centerScene();
+    });
+
+    $("#fullscreen{{ vizid }}").on('click', function() {
+      tulipView.fullScreen();
     });
 
     $("#toolbar-options{{ vizid }}").find(".interactor-fisheye").on('click', function() {
