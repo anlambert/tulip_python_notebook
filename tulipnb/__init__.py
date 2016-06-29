@@ -116,7 +116,16 @@ TULIPJS_HTML = jinja2.Template("""
 
   require(["tulip", "base64utils", "jquerytoolbar"], function(tulip, base64utils) {
 
-    var tulipView;
+    var tulipView = null;
+
+    function resizeTulipView() {
+      if (tulipView && tulipView.fullScreenActivated) return;
+      if (tulipView) {
+        tulipView.resize();
+      }
+    }
+
+    window.addEventListener('resize', resizeTulipView, false);
 
     function initTulipGraphVisualization() {
       if (!tulip.isLoaded()) {
