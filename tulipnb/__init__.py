@@ -47,6 +47,7 @@ TULIPJS_HTML = jinja2.Template("""
    <a class="interactor-znp" href="#"><i class="fa fa-hand-paper-o" aria-hidden="true"></i></a>
    <a class="interactor-zoom" href="#"><i class="fa fa-search-plus"></i></a>
    <a class="interactor-fisheye" href="#"><i class="fa fa-eye"></i></a>
+   <a class="interactor-neighborhood" href="#"><i class="fa fa-share-alt"></i></a>
 </div>
 
 <div id="{{ vizid }}" class="tulip_viz">
@@ -150,6 +151,10 @@ TULIPJS_HTML = jinja2.Template("""
 
     $("#toolbar-options{{ vizid }}").find(".interactor-zoom").on('click', function() {
       tulipView.activateInteractor('RectangleZoom');
+    });
+    
+    $("#toolbar-options{{ vizid }}").find(".interactor-neighborhood").on('click', function() {
+      tulipView.activateInteractor('Neighborhood');
     });
 
     $("#center{{ vizid }}").on('click', function() {
