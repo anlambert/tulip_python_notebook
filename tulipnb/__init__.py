@@ -128,23 +128,6 @@ TULIPJS_HTML = jinja2.Template("""
 
     window.addEventListener('resize', resizeTulipView, false);
 
-    function initTulipGraphVisualization() {
-      if (!tulip.isLoaded()) {
-        setTimeout(initTulipGraphVisualization, 1000);
-      } else {
-        var tlpbgzGraphBase64 = "{{ tlpbgz_graph_base64 }}";
-        var tlpbgzGraphBinary = base64utils.base64DecToArr(tlpbgzGraphBase64);
-        var container = document.getElementById("{{ vizid }}");
-        tulipView = tulip.View(container);
-        $("#toolbar{{ vizid }}").removeClass('hidden');
-        $("#center{{ vizid }}").removeClass('hidden');
-        $("#fullscreen{{ vizid }}").removeClass('hidden');
-        tulipView.loadGraphFromData("graph.tlpb.gz", tlpbgzGraphBinary);
-        tulipView.centerScene();
-        tulipView.draw();
-      }
-    };
-
     $("#toolbar-options{{ vizid }}").find(".interactor-znp").on('click', function() {
       tulipView.activateInteractor('ZoomAndPan');
     });
@@ -152,7 +135,7 @@ TULIPJS_HTML = jinja2.Template("""
     $("#toolbar-options{{ vizid }}").find(".interactor-zoom").on('click', function() {
       tulipView.activateInteractor('RectangleZoom');
     });
-    
+
     $("#toolbar-options{{ vizid }}").find(".interactor-neighborhood").on('click', function() {
       tulipView.activateInteractor('Neighborhood');
     });
@@ -194,7 +177,18 @@ TULIPJS_HTML = jinja2.Template("""
       hideOnClick: true
     });
 
-    initTulipGraphVisualization();
+    tulip.init().then(function() {
+      var tlpbgzGraphBase64 = "{{ tlpbgz_graph_base64 }}";
+      var tlpbgzGraphBinary = base64utils.base64DecToArr(tlpbgzGraphBase64);
+      var container = document.getElementById("{{ vizid }}");
+      tulipView = tulip.View(container);
+      $("#toolbar{{ vizid }}").removeClass('hidden');
+      $("#center{{ vizid }}").removeClass('hidden');
+      $("#fullscreen{{ vizid }}").removeClass('hidden');
+      tulipView.loadGraphFromData("graph.tlpb.gz", tlpbgzGraphBinary);
+      tulipView.centerScene();
+      tulipView.draw();
+    });
 
   });
 </script>
