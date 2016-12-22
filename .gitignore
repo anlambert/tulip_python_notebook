@@ -1,0 +1,4 @@
+*.pyc
+*.pyo
+fontconfig/
+*ipynb_checkpoints*
