@@ -14,7 +14,7 @@ import shutil
 import IPython
 from IPython.core.getipython import get_ipython
 from IPython.core.display import display as ipythondisplay
-from tulip import *
+from tulip import tlp
 
 TULIPJS_HTML = jinja2.Template("""
 <style type="text/css">
